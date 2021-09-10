@@ -81,6 +81,17 @@ vpath common%Makefile $(TOP)/ADApp/
 CFG += commonLibraryMakefile
 CFG += commonDriverMakefile
 
+# Installing to a different install location than TOP so need to manually create ADApp.
+# For these type of configurations, if someone is looking to reduce the size of EPICS for transferring,
+# and uses INSTALL LOCATION, the common Makefile's being in CFG requires modifying every camera module
+# installed's makefile. An easier approach is to create an ADApp folder in the install location and then
+# have the user override ADCORE definition on deployment machine to point to the install location.
+ifneq ($(INSTALL_LOCATION), $(TOP))
+  mkdir -p $(INSTALL_LOCATION)/ADApp
+  cp commonLibraryMakefile $(INSTALL_LOCATION)/ADApp/commonLibraryMakefile
+  cp commonDriverMakefile $(INSTALL_LOCATION)/ADApp/commonDriverMakefile
+endif
+
 include $(TOP)/configure/RULES
 #----------------------------------------
 #  ADD RULES AFTER THIS LINE
